@@ -104,6 +104,7 @@ class AddressBook(UserDict):
 # john_record = Record("John")
 # john_record.add_phone("1234567890")
 # john_record.add_phone("5555555555")
+# john_record.add_birthday('25.02.1999')
 # print(john_record)
 # #     # Додавання запису John до адресної книги
 # book.add_record(john_record)
@@ -127,6 +128,7 @@ class AddressBook(UserDict):
 # found_phone = john.find_phone("5555555555")
 # print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
 
-# #     # Видалення запису Jane
-# book.delete("Jane")
+# # #     # Видалення запису Jane
+# # book.delete("Jane")
+# print(book.birthdays)
 
