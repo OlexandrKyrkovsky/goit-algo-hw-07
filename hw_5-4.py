@@ -1,6 +1,8 @@
 from hw_6 import AddressBook, Record
-from hw3_4 import birthdays
+# from birthday import birthdays
+
 book=AddressBook()
+
 def input_error(func):
     def inner(*args, **kwargs):
         try:
@@ -51,9 +53,12 @@ def show_all(book):
 @input_error
 def add_birthday(args, book):
     name,birthday=args
-    record = Record(name)
-    record.add_birthday(birthday)
-    book.add_record(record)
+    user_record = book.get(name)
+    user_record.add_birthday(birthday)
+    # user_record.birthday = birthday
+    # record = Record(name)
+    # record.add_birthday(birthday)
+    # book.add_record(record)
     return "Birthday added"
     
 
@@ -61,10 +66,22 @@ def add_birthday(args, book):
 def show_birthday(args, book):
     return book[args[0]]
 
+@input_error
+def birthdays(book):
+    result_dict = book.birthdays()
+    congratulation_list = []
+    for user in result_dict:
+        congratulation_list.append(f'Congratualation date: {user['birthday']} Name: {user['name']}')
+    return '\n'.join(congratulation_list)
+
 
 def main():
     book=AddressBook()
-    print("Welcome to the assistant bot!")
+    # record = Record('Edd')
+    # record.add_phone('1234567890')
+    # record.add_birthday('25.02.2000')
+    # book.add_record(record)
+    # print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
@@ -87,12 +104,9 @@ def main():
         elif command == "show-birthday":
             print(show_birthday(args,book))
         elif command == "birthdays":
-            print(birthdays(args,book))
+            print(birthdays(book))
         else:
             print("Invalid command.")
 
 if __name__ == "__main__":
     main()
-
-
-    # підкажіть що і де поправити

@@ -10,6 +10,9 @@ class Field:
 
     def __str__(self):
         return str(self.value)
+    
+    def __repr__(self):
+        return str(self.value)
 
 class Name(Field):
     def __init__(self, value):
@@ -24,7 +27,7 @@ class Phone(Field):
 class Birthday(Field):
     def __init__(self, value):
         try:
-            patern=r'\d{2}\.\d{2}\.d{4}'
+            patern=r'(\d{2})\.(\d{2})\.(\d{4})'
             if re.match(patern,value):
                 self.value = dtdt.strptime(value, "%d.%m.%Y")
         except ValueError:
@@ -38,7 +41,6 @@ class Record:
 
 
     def add_phone(self,phone):
-        
         self.phones.append(Phone(phone))
         
 
@@ -59,7 +61,7 @@ class Record:
             return phone
         
     def add_birthday(self,birthday):
-        self.birthday=birthday
+        self.birthday=Birthday(birthday)
         
 
     def __str__(self):
@@ -78,57 +80,24 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
 
-    def birthdays(book):
+    def birthdays(self):
         today_date=dtdt.today().date()
         birthdays=[]
-        for user in book:
-            birth_date=user['birthday']
-            birth_date=str(today_date.year)+birth_date[:4]
-            birth_date=dtdt.strptime(birth_date, "%d.%m.%Y").date()
+        for user in self:
+            user_record = self[user]
+            birth_date=user_record.birthday.value
+            # birth_date=str(today_date.year)+birth_date.year
+            birth_date = birth_date.replace(year=today_date.year)
+            birth_date=birth_date.date()
             w_day=birth_date.isoweekday()
             days_difference=(birth_date-today_date).days
             if 0<=days_difference<7:
                 if w_day<6:
-                    birthdays.append({'name':user['name'],'birthday':birth_date.strftime("%d.%m.%Y")})
+                    birthdays.append({'name':user_record.name,'birthday':birth_date.strftime("%Y.%m.%d")})
                 else:
                     if (birth_date+dt.timedelta(days=1)).weekday()==0:
-                        birthdays.append({'name':user['name'], 'birthday':(birth_date+dt.timedelta(days=1)).strftime("%d.%m.%Y")})
+                        birthdays.append({'name':user_record.name, 'birthday':(birth_date+dt.timedelta(days=1)).strftime("%Y.%m.%d")})
                     elif (birth_date+dt.timedelta(days=2)).weekday()==0: 
-                        birthdays.append({'name':user['name'], 'birthday':(birth_date+dt.timedelta(days=2)).strftime("%d.%m.%Y")})     
+                        birthdays.append({'name':user_record.name, 'birthday':(birth_date+dt.timedelta(days=2)).strftime("%Y.%m.%d")})     
         return birthdays
-
-# # # Створення нової адресної книги
-# book = AddressBook()
-
-# #     # Створення запису для John
-# john_record = Record("John")
-# john_record.add_phone("1234567890")
-# john_record.add_phone("5555555555")
-# john_record.add_birthday('25.02.1999')
-# print(john_record)
-# #     # Додавання запису John до адресної книги
-# book.add_record(john_record)
-
-# #     # Створення та додавання нового запису для Jane
-# jane_record = Record("Jane")
-# jane_record.add_phone("9876543210")
-# book.add_record(jane_record)
-
-# #     # Виведення всіх записів у книзі
-# for name, record in book.data.items():
-#     print(record)
-
-# #     # Знаходження та редагування телефону для John
-# john = book.find("John")
-# john.edit_phone("1234567890", "1112223333")
-
-# print(john)  # Виведення: Contact name: John, phones: 1112223333; 5555555555
-
-# #     # Пошук конкретного телефону у записі John
-# found_phone = john.find_phone("5555555555")
-# print(f"{john.name}: {found_phone}")  # Виведення: 5555555555
-
-# # #     # Видалення запису Jane
-# # book.delete("Jane")
-# print(book.birthdays)
 
